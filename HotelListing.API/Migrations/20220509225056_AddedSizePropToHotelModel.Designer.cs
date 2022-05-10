@@ -4,6 +4,7 @@ using HotelListing.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelListing.API.Migrations
 {
     [DbContext(typeof(HotelListingDbContext))]
-    partial class HotelListingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220509225056_AddedSizePropToHotelModel")]
+    partial class AddedSizePropToHotelModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,6 +154,9 @@ namespace HotelListing.API.Migrations
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
@@ -214,15 +219,15 @@ namespace HotelListing.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f35abaae-514f-4849-86af-146931560b48",
-                            ConcurrencyStamp = "839b0093-51e4-4b56-8878-8a7d8747bc6a",
+                            Id = "f6aa44c0-0d67-4a34-97bb-9a5d5619f5d1",
+                            ConcurrencyStamp = "16a7bce4-f2ba-4d33-9ecb-89b51eb4e5e4",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "ad58c8a8-69ba-42ce-a66d-6d314e758e35",
-                            ConcurrencyStamp = "2903114d-9c5d-47b2-aa75-7947f2289051",
+                            Id = "f1516cf9-317b-4c4b-8943-d18803108e2e",
+                            ConcurrencyStamp = "f090fe70-72ce-442e-a403-5be8572c3206",
                             Name = "User",
                             NormalizedName = "USER"
                         });
