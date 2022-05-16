@@ -19,8 +19,6 @@ namespace HotelListing.API.Repository
         private readonly IConfiguration _configuration;
         private ApiUser _user;
 
-        private const string _loginProvider = "HotelListingApi";
-        private const string _refreshToken = "RefreshToken";
 
         public AuthManager(IMapper mapper, UserManager<ApiUser> userManager, IConfiguration configuration)
         {
@@ -54,7 +52,8 @@ namespace HotelListing.API.Repository
             return new AuthResponseDTO
             {
                 Token = token,
-                UserId = _user.Id
+                UserId = _user.Id,
+                RefreshToken = await CreateRefreshToken()
             };
 
         }
