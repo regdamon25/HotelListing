@@ -7,10 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\CountriesV2Controller.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+   
+    
+   
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="8.0.10" />
@@ -27,9 +26,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
   </ItemGroup>
 
+     <ProjectReference Include="..\HotelListing.API.Core\HotelListing.API.Core.csproj" />
 
-	<ItemGroup>
-		<ProjectReference Include="..\HotelListing.API.Core\HotelListing.API.Core.csproj" />
-	</ItemGroup>
 
 </Project>

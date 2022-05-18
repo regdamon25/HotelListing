@@ -1,4 +1,4 @@
-﻿namespace HotelListing_Common
+﻿namespace HotelListing.Common
 {
     public static class SD
     {

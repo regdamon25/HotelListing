@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using HotelListing.API.Core.Contracts;
+using HotelListing.API.Core.Models;
+using HotelListing.API.Core.Models.Hotel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HotelListing.API.Data;
-using AutoMapper;
-using HotelListing.API.Contracts;
-using HotelListing.API.Models.Hotel;
+using static HotelListing.API.Core.Models.QueryParameters;
 
 namespace HotelListing.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class HotelsController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -26,53 +23,37 @@ namespace HotelListing.API.Controllers
         }
 
         // GET: api/Hotels
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<HotelDTO>>> GetHotels()
         {
-            var hotels = await _hotelsRepository.GetAllAsync();
-            var results = _mapper.Map<List<HotelDTO>>(hotels);
-            return Ok(results);
+           var hotels = await _hotelsRepository.GetAllAsync<HotelDTO>();
+            return Ok(hotels);
+        }
+
+        // GET: api/Hotels
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<HotelDTO>>> GetPagedHotels([FromQuery] QueryParameters queryParameters)
+        {
+            var pagedHotelsResult = await _hotelsRepository.GetAllAsync<HotelDTO>(queryParameters);
+            return Ok(pagedHotelsResult);
         }
 
         // GET: api/Hotels/5
         [HttpGet("{id}")]
         public async Task<ActionResult<HotelDTO>> GetHotel(int id)
         {
-            var hotel = await _hotelsRepository.GetAsync(id);
-
-            if (hotel == null)
-            {
-                return NotFound();
-            }
-
-            var results = _mapper.Map<HotelDTO>(hotel);
-
-            return Ok(results);
+            var hotel = await _hotelsRepository.GetAsync<HotelDTO>(id);
+            return Ok(hotel);
         }
 
         // PUT: api/Hotels/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHotel(int id, HotelDTO updateHotelDTO)
+        public async Task<IActionResult> PutHotel(int id, HotelDTO hotelDTO)
         {
-            if (id != updateHotelDTO.Id)
-            {
-                return BadRequest();
-            }
-
-            //_context.Entry(hotel).State = EntityState.Modified;
-            var hotel = await _hotelsRepository.GetAsync(id);
-
-            if(hotel == null)
-            {
-                return NotFound();
-            }
-
-            _mapper.Map(updateHotelDTO, hotel);
-
             try
             {
-                await _hotelsRepository.UpdateAsync(hotel);
+                await _hotelsRepository.UpdateAsync(id, hotelDTO);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -92,27 +73,17 @@ namespace HotelListing.API.Controllers
         // POST: api/Hotels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Hotel>> PostHotel(CreateHotelDTO createHotelDTO)
+        public async Task<ActionResult<HotelDTO>> PostHotel(CreateHotelDTO createHotelDTO)
         {
-            var hotel = _mapper.Map<Hotel>(createHotelDTO);
-
-            await _hotelsRepository.AddAsync(hotel);
-
-            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotel);
+            var hotel = await _hotelsRepository.AddAsync<CreateHotelDTO, HotelDTO>(createHotelDTO);
+            return CreatedAtAction(nameof(GetHotel), new { id = hotel.Id }, hotel);
         }
 
         // DELETE: api/Hotels/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHotel(int id)
         {
-            var hotel = await _hotelsRepository.GetAsync(id);
-            if (hotel == null)
-            {
-                return NotFound();
-            }
-
             await _hotelsRepository.DeleteAsync(id);
-
             return NoContent();
         }
 
